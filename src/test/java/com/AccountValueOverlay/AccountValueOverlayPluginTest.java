@@ -1,13 +1,13 @@
-package com.blended420.bankvalue;
+package com.AccountValueOverlay;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class BankValuePluginTest
+public class AccountValueOverlayPluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
-		ExternalPluginManager.loadBuiltin(BankValuePlugin.class);
+		ExternalPluginManager.loadBuiltin(AccountValuePlugin.class);
 		RuneLite.main(args);
 	}
 }
