@@ -29,6 +29,7 @@ import java.util.Arrays;
 public class AccountValuePlugin extends Plugin {
     private long[] GeSlots = new long[8];
 
+    private boolean IsBankSynced;
     @Inject
     private ConfigManager configManager;
     @Inject
@@ -59,6 +60,9 @@ public class AccountValuePlugin extends Plugin {
     @Subscribe
     public void onItemContainerChanged(ItemContainerChanged event) {
         if (event.getContainerId() == InventoryID.BANK.getId()) {
+            if (!overlay.IsBankSynced()) {
+                overlay.UpdateBankSynced(true);
+            }
             final Item[] items = client.getItemContainer(InventoryID.BANK).getItems();
             updateTotalBankValue(items);
         }

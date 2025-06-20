@@ -21,6 +21,7 @@ public class AccountValueOverlay extends Overlay {
     private long GeValue;
     private long WornValue;
     private boolean isCollectButtonVis;
+    private boolean IsBankSynced;
     private final PanelComponent panelComponent = new PanelComponent();
 
     @Inject
@@ -56,10 +57,19 @@ public class AccountValueOverlay extends Overlay {
                 .text("Stored")
                 .color(Color.GREEN)
                 .build());
-        panelComponent.getChildren().add(LineComponent.builder()
-                .left("Bank:")
-                .right(bankValueTxt)
-                .build());
+        if (IsBankSynced) {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Bank:")
+                    .right(bankValueTxt)
+                    .build());
+        } else {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Bank:")
+                    .right("Open Bank")
+                    .leftColor(Color.RED)
+                    .rightColor(Color.RED)
+                    .build());
+        }
         if (isCollectButtonVis) {
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("GE (COLLECT):")
@@ -91,6 +101,14 @@ public class AccountValueOverlay extends Overlay {
 
     public void UpdateGeButton(boolean Value) {
         this.isCollectButtonVis = Value;
+    }
+
+    public void UpdateBankSynced(boolean Value) {
+        this.IsBankSynced = Value;
+    }
+
+    public boolean IsBankSynced() {
+        return this.IsBankSynced;
     }
 
     public void updateBankValue(long Value) {
