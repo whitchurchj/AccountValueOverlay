@@ -20,15 +20,17 @@ public class AccountValueOverlay extends Overlay {
     private long InvValue;
     private long GeValue;
     private long WornValue;
+    private boolean isCollectButtonVis;
     private final PanelComponent panelComponent = new PanelComponent();
 
     @Inject
-    public AccountValueOverlay(AccountValueConfig config){
+    public AccountValueOverlay(AccountValueConfig config) {
         this.config = config;
         setPosition(OverlayPosition.TOP_LEFT);
         setPriority(OverlayPriority.HIGH);
         setLayer(OverlayLayer.ABOVE_SCENE);
     }
+
     @Override
     public Dimension render(Graphics2D graphics) {
         panelComponent.getChildren().clear();
@@ -38,11 +40,10 @@ public class AccountValueOverlay extends Overlay {
         String geValueTxt = formatNumber(GeValue);
         String projectedGeValueTxt = formatNumber(ProjectedGeValue);
         String wornValueTxt = formatNumber(WornValue);
-        String totalValueTxt = formatNumber(BankValue+InvValue+GeValue+WornValue);
+        String totalValueTxt = formatNumber(BankValue + InvValue + GeValue + WornValue);
         panelComponent.setPreferredSize(new Dimension(
-                BankValue+InvValue+GeValue+WornValue == 0 ? 150: graphics.getFontMetrics().stringWidth(QuantityFormatter.formatNumber(BankValue+InvValue+GeValue+WornValue)) + 100,
+                BankValue + InvValue + GeValue + WornValue == 0 ? 150 : graphics.getFontMetrics().stringWidth(QuantityFormatter.formatNumber(BankValue + InvValue + GeValue + WornValue)) + 100,
                 0));
-
         panelComponent.getChildren().add(TitleComponent.builder()
                 .text("Account Value")
                 .color(Color.GREEN)
@@ -55,35 +56,41 @@ public class AccountValueOverlay extends Overlay {
                 .text("Stored")
                 .color(Color.GREEN)
                 .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Bank:")
+                .right(bankValueTxt)
+                .build());
+        if (isCollectButtonVis) {
             panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Bank:")
-                    .right(bankValueTxt)
+                    .left("GE (COLLECT):")
+                    .leftColor(Color.RED)
+                    .right(geValueTxt)
                     .build());
-            /*if (config.ShowProjectedGe()){
-                panelComponent.getChildren().add(LineComponent.builder()
-                        .left("GE Sale Price:")
-                        .right(projectedGeValueTxt)
-                        .build());
-            } else {
-                panelComponent.getChildren().add(LineComponent.builder()
-                        .left("GE:")
-                        .right(geValueTxt)
-                        .build());
-            }*/
+        } else {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("GE:")
+                    .leftColor(Color.WHITE)
+                    .right(geValueTxt)
+                    .build());
+        }
         panelComponent.getChildren().add(TitleComponent.builder()
                 .text("Character")
                 .color(Color.GREEN)
                 .build());
-            panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Inventory:")
-                    .right(invValueTxt)
-                    .build());
-            panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Worn:")
-                    .right(wornValueTxt)
-                    .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Inventory:")
+                .right(invValueTxt)
+                .build());
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Worn:")
+                .right(wornValueTxt)
+                .build());
 
         return panelComponent.render(graphics);
+    }
+
+    public void UpdateGeButton(boolean Value) {
+        this.isCollectButtonVis = Value;
     }
 
     public void updateBankValue(long Value) {
@@ -106,9 +113,9 @@ public class AccountValueOverlay extends Overlay {
         this.WornValue = Value;
     }
 
-    private String formatNumber(long num){
+    private String formatNumber(long num) {
 
-            return config.showPriceSuffix() ? QuantityFormatter.quantityToStackSize(num) : QuantityFormatter.formatNumber(num);
+        return config.showPriceSuffix() ? QuantityFormatter.quantityToStackSize(num) : QuantityFormatter.formatNumber(num);
 
     }
 }
